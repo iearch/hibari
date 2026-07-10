@@ -1,0 +1,14 @@
+Comment before content.
+
+start
+
+
+black  8
+
+# per-line comment
+cats_01  16  in-line comment
+
+
+end
+
+Comment after content. All comments and color lines are optional, of course, including 'start' and 'end'.

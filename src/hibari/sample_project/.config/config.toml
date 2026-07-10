@@ -1,0 +1,124 @@
+# # hibari config file # #
+
+
+[timesheet]
+
+## print text (mainly for easier navigation in VSView).
+## font covers only latin characters (cp1252).
+##
+## 'names' - print image names;
+## 'full names' - same but including color fillers;
+## 'timings' - print timings;
+## 'full timings' - same but including color fillers;
+## 'comments' - print in-line comments;
+## 'lines' - print full timesheet lines;
+## '' - do not print anything
+
+what_to_print = 'names'
+
+## text scaling factor
+
+scale = 2
+
+## text position, from 1 to 9 (see numpad keys)
+
+position = 7
+
+
+[crop]
+
+## cropping to a separate clip.
+## negative values will add borders (adjust color below).
+## values are rounded to 2
+
+left   = 0
+right  = 0
+top    = 0
+bottom = 0
+
+## border color. values are for 8-bit YUV.
+## play with the first value (luma), otherwise, use
+## https://www.mikekohn.net/file_formats/yuv_rgb_converter.php
+
+border_color = [235, 128, 128]
+
+## by default, a comparison clip is stacked with the original clip.
+## setting this to true will stack a cropped clip instead
+
+stack_with_cropped = false
+
+
+[colors]
+
+## solid color fillers. channel values are for 24-bit RGB.
+## adjust white and black values if the desired color should be duller,
+## or add more colors below, following the pattern
+
+white = [255, 255, 255]
+black = [0, 0, 0]
+custom_red = [235, 40, 80]
+
+
+[fps]
+
+## frame rate (= fps_num / fps_den)
+
+fps_num = 24000
+fps_den = 1001
+
+
+[comparison_clip]
+
+## clear everything inside quotes if a comparison is not needed.
+## both relative and absolute paths are supported
+
+comparison_source = '''./comp/cats.mp4'''
+
+## frame range for the comparison clip
+
+first_frame = 0
+last_frame  = 0  # zero means no trimming will be applied
+
+## set length for filler clips at the beginning and the end of the comparison clip
+
+comp_filler_start_length = 0
+comp_filler_end_length   = 0
+start_color = 'white'  # see above
+end_color   = 'white'
+
+
+[merge]
+
+## weight for luma and chroma planes.
+## see https://www.vapoursynth.com/doc/functions/video/merge.html
+
+weight = [0.75, 0.75]
+
+## levels and contrast settings.
+## the lower the value, the brighter the image
+
+level_threshold = 235  # 0-235; 235 means no change in levels
+
+## the lower the value, the more visible the lines
+
+level_gamma = 1.0  # 1.0 means no gamma correction will be applied
+
+## by default, two clips are merged by the weight above.
+## for cute effect, try setting this to true.
+## useful for timing frames with minor changes between them
+
+inscribe = false
+
+## white / black lines
+
+invert = true
+
+
+[misc]
+
+## for better frame seeking, source filters index a source to a separate index file.
+## hibari uses BestSource (bs) and L-SMASH (lsmas).
+## lsmas indexes sources faster, but bs tends to be more accurate.
+## leave as is until any issues (e.g. incorrect frame rate) arise
+
+lsmas = false
