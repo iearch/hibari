@@ -1,3 +1,4 @@
+import logging
 from pathlib import Path
 
 import vapoursynth as vs
@@ -74,6 +75,8 @@ def vsscript(
     out_names = list[str]()
     out_nodes = list[vs.VideoNode]()
     core = vs.core
+
+    logging.getLogger('vapoursynth').setLevel(logging.ERROR)
 
     def normalize(clip: vs.VideoNode) -> vs.VideoNode:
         '''
