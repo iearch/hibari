@@ -70,12 +70,12 @@ def encode_out_nodes(
                 if i not in available_indices:
                     raise ValueError
         except SyntaxError:
-            print('[red]Error: Output nodes are entered incorrectly!\n'
+            print('[red]Error: Output nodes were entered incorrectly!\n'
                   'Use [cyan]3[/cyan] for a single node, [cyan]0,3,4[/cyan] for separate '
                   'nodes, and [cyan]0..3[/cyan] for ranges.')
             raise Exit(1)
         except ValueError:
-            print('[red]Error: Incorrect node index entered.')
+            print('[red]Error: Invalid node index entered.')
             print(table)
             raise Exit(1)
         else:

@@ -47,7 +47,7 @@ def timesheet(
 
 
 ts_name_help = 'Read the timesheet from a different file instead of ' \
-    '[yellow]./timesheet.txt[/yellow]. File must be in the same directory. ' \
+    '[yellow]./timesheet.txt[/yellow]. The file must be in the same directory. ' \
     'Provide a name without an extension.'
 
 

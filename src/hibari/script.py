@@ -165,9 +165,9 @@ def vsscript(
                 if src_fps == var_fps_fraction:
                     print('[red]Warning: Comparison source has variable frame rate!')
                 else:
-                    print('Currently, comparison source frame rate is changed to ' 
+                    print('Currently, a comparison source frame rate is changed to ' 
                           'match the set frame rate of a clip (speed is the same). '
-                          'You may want to match comparison '
+                          'You may want to match the comparison '
                           'source frame rate instead in the config.')
 
             return src
@@ -210,9 +210,7 @@ def vsscript(
 
 
     def border_or_crop_clip(clip: vs.VideoNode) -> vs.VideoNode:
-        '''
-        Borders or crops clip only if told so by user.
-        '''
+        '''Borders or crops clip only if told so by user.'''
         crop_dist = [mod2(val) if val >= 0 else 0 for val in crop.values()]
         border_dist = [mod2(abs(val)) if val < 0 else 0 for val in crop.values()]
 

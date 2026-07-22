@@ -40,7 +40,7 @@ def create_timesheet(default_timing: int) -> None:
         write_ts(mode='x')
         print('[green]Timesheet created!')
     except FileExistsError:
-        print(f'[red]Warning: Timesheet is already exists:\n'
+        print(f'[red]Warning: Timesheet already exists:\n'
               f'[yellow]{str(user_timesheet)}[/yellow]\n'
               f'Rewriting will erase all comments, color fillers, and other formatting. Rewrite?')
 
@@ -112,7 +112,7 @@ def get_timings_from_timesheet(ts_name: str) -> list[tuple[str, str, str, str]]:
                 comments.append(img_com)
             except (AttributeError, IndexError):
                 print(
-                    f'[red]Error: Timings are not found! Problem line:\n'
+                    f'[red]Error: Timings not found! Problem line:\n'
                     f'\t[yellow]{ln}[/yellow]\n'
                     f'If you added timesheet lines or images after the timesheet '
                     f'was created, please check if you forgot to match them.\n'
