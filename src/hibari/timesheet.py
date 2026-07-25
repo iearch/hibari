@@ -56,6 +56,7 @@ def create_timesheet(default_timing: int) -> None:
 def get_timings_from_timesheet(ts_name: str) -> list[tuple[str, str, str, str]]:
     ts_loc = user_timesheet.parent / f'{ts_name}.txt'
 
+    # todo: try to migrate to full regex
     try:
         with ts_loc.open(encoding='utf-8') as timesheet:
             ts_lines = [l.splitlines() for l in timesheet.readlines()]
