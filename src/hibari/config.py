@@ -68,6 +68,7 @@ crop: dict[str, int] = {
 }
 border_clr: list[int] = crop_dict['border_color']  # YUV
 stack_with_cropped: bool = crop_dict['stack_with_cropped']
+merge_with_cropped: bool = crop_dict['merge_with_cropped']
 
 colors: dict[str, list[int]] = data['colors']  # RGB
 

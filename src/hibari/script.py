@@ -49,6 +49,7 @@ def vsscript(
         crop,
         border_clr,
         stack_with_cropped,
+        merge_with_cropped,
         colors,
         fps_num,
         fps_den,
@@ -340,7 +341,7 @@ def vsscript(
 
         clip_ver, clip_hor = stack_two_clips(clip_crop if stack_with_cropped else anim_clip, src_clip)
 
-        bordered, src_to_clip = prepare_clips_for_merge(clip_crop, src_clip)
+        bordered, src_to_clip = prepare_clips_for_merge(clip_crop if merge_with_cropped else anim_clip, src_clip)
         merged = merge_two_clips(bordered, src_to_clip)
 
         is_different_from_clip = (anim_clip.height != bordered.height

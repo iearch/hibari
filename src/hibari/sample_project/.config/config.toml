@@ -42,10 +42,10 @@ bottom = 0
 
 border_color = [235, 128, 128]
 
-## by default, a comparison clip is stacked with the original clip.
-## setting this to true will stack a cropped clip instead
+## whether to stack / merge a comparison clip with the cropped clip or with the original clip
 
 stack_with_cropped = false
+merge_with_cropped = true
 
 
 [colors]
