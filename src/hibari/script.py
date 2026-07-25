@@ -38,7 +38,7 @@ def vsscript(
     resize_val: int | None = None,
 ) -> list[tuple[int, str, vs.VideoNode]]:
     '''
-    A general function to unify all VapourSynth operations and make vsview work
+    A general function to unify all VapourSynth operations and make VSView work
     with a less obnoxious workaround.
     '''
     from hibari.config import (
@@ -79,9 +79,7 @@ def vsscript(
     logging.getLogger('vapoursynth').setLevel(logging.ERROR)
 
     def normalize(clip: vs.VideoNode) -> vs.VideoNode:
-        '''
-        Provides a proper color transfer to 8-bit 4:2:0 YUV with BT.709 colorimetry.
-        '''
+        '''Provides a proper color transfer to 8-bit 4:2:0 YUV with BT.709 colorimetry.'''
         inited_clip = initialize_clip(clip).std.RemoveFrameProps('_Alpha')
         transferred_clip = inited_clip.resize.Bilinear(
             format=vs.YUV420P8,
@@ -358,8 +356,7 @@ def vsscript(
 
 
 bad_msg = 'Something bad happened!\n' \
-    'To see the error description, ' \
-    'run again: hibari view\n' \
+    'To see the error description, run again: hibari view\n' \
     'Or, alternatively, undo the changes and reload the script.'
 
 if is_preview():
