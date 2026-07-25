@@ -1,4 +1,4 @@
-import logging
+from logging import getLogger, ERROR, INFO
 from pathlib import Path
 
 import vapoursynth as vs
@@ -76,7 +76,8 @@ def vsscript(
     out_nodes = list[vs.VideoNode]()
     core = vs.core
 
-    logging.getLogger('vapoursynth').setLevel(logging.ERROR)
+    # suppress API messages
+    getLogger('vapoursynth').setLevel(ERROR)
 
     def normalize(clip: vs.VideoNode) -> vs.VideoNode:
         '''Provides a proper color transfer to 8-bit 4:2:0 YUV with BT.709 colorimetry.'''
@@ -130,6 +131,9 @@ def vsscript(
 
 
     def prepare_comp_source() -> list[vs.VideoNode]:
+        # show caching progress
+        getLogger('vapoursynth').setLevel(INFO)
+
         def init_source() -> vs.VideoNode:
             try:
                 if lsmas:
