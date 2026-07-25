@@ -22,6 +22,7 @@ def encode_out_nodes(
     verbose: bool,
     fullargs: str | None,
     resize_val: int | None,
+    mkv: bool,
 ) -> None:
     nodes = vsscript(ts_name, quiet=True, resize_val=resize_val)
     res = '' if resize_val is None else ' ' + str(resize_val) + 'p'
@@ -30,7 +31,7 @@ def encode_out_nodes(
         binary = fullargs.split()[0]
 
     is_x = binary.startswith('x264')
-    is_ff = binary.startswith('FFmpeg') or binary.startswith('ffmpeg')
+    is_ff = binary.lower().startswith('ffmpeg')
 
 
     def list_available_nodes() -> tuple[list[int], Table]:    
@@ -87,16 +88,16 @@ def encode_out_nodes(
 
         x_bin = f'{binary} --demuxer y4m'
         x_def_args = '--preset veryslow --crf 13.5'
-        x_info = '--colormatrix bt709 --transfer bt709 --colorprim bt709 -o "./clips/{i}{name}{res}.mp4" -'
+        x_info = '--colormatrix bt709 --transfer bt709 --colorprim bt709 -o "./clips/{i}{name}{res}.{ext}" -'
         ff_bin = f'{binary} -y -i - -c:v libx264'
         ff_def_args = '-preset veryslow -crf 13.5'
-        ff_info = '-x264-params "colormatrix=bt709:transfer=bt709:colorprim=bt709" "./clips/{i}{name}{res}.mp4"'
+        ff_info = '-x264-params "colormatrix=bt709:transfer=bt709:colorprim=bt709" "./clips/{i}{name}{res}.{ext}"'
 
         is_def = args == ff_def_args
         line = '{binary} {args} {info}'.format(
             binary=x_bin if is_x else ff_bin,
             args=x_def_args if is_x and is_def else ff_def_args if is_ff else args,
-            info=x_info if is_x else ff_info
+            info=x_info if is_x else ff_info,
         )
 
         if not (is_x or is_ff) and which(binary):
@@ -107,9 +108,9 @@ def encode_out_nodes(
         return line
 
 
-    def encode(line: str, i: int, name: str, node: VideoNode, res: str) -> None:
+    def encode(line: str, i: int, name: str, node: VideoNode, res: str, mkv: bool) -> None:
         with subprocess.Popen(
-            line.format(i=i, name=' ' + name, res=res),
+            line.format(i=i, name=' ' + name, res=res, ext='mkv' if mkv else 'mp4'),
             stdin=subprocess.PIPE,
             stdout=None if verbose else subprocess.DEVNULL,
             stderr=None if verbose else subprocess.DEVNULL,
@@ -135,7 +136,7 @@ def encode_out_nodes(
 
             line = fullargs if fullargs else get_shell_line()
             try:
-                encode(line, i, name, node, res)
+                encode(line, i, name, node, res, mkv)
             except KeyboardInterrupt:
                 # doesn't work well with x264
                 raise Abort
@@ -147,7 +148,8 @@ def encode_out_nodes(
                 print('[red]Error: Broken pipe!')
                 if is_x:
                     print('[red]Make sure your [yellow]x264[/yellow] binary was compiled '
-                          'with an MP4 support. Switch to [yellow]FFmpeg[/yellow] if unsure.')
+                          'with an MP4 support. If unsure, switch to [yellow]FFmpeg[/yellow] '
+                          'or use with [cyan]--mkv[/cyan].')
                 raise Exit(1)
             except Exception as e:
                 print(f'[red]### {e} ###')

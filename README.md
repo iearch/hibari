@@ -1,6 +1,6 @@
 # hibari
 
-This small command line tool lets you create clips from individual images with a specified repeat number (timing) for each image, using a plain text timesheet. In addition, it is possible to create a comparison by stacking a comparison clip either vertically or horizontally, or merging two clips into one.
+This small command line tool lets you create, view, and encode clips from individual images with a specified repeat number (timing) for each image, using a plain text timesheet. In addition, it is possible to create a comparison by stacking a comparison clip either vertically or horizontally, or merge two clips together.
 
 `hibari` was originally written for animating production materials where timings are unknown but a final video is available and can be used as a guide.
 
@@ -14,7 +14,7 @@ Made courtesy of [VapourSynth](https://github.com/vapoursynth/vapoursynth) and [
     ```
     pip install hibari
     ```
-- for encoding, install `x264` (MP4 support is required) or `FFmpeg` in the PATH
+- for encoding, install `x264` or `FFmpeg` in the PATH
 
 ## Usage
 
@@ -24,7 +24,7 @@ hibari init
 ```
 `hibari` works by loading all the images from a subdirectory called `images`, loading each line from a timesheet located in the project directory, checking if all lines match images, and then repeating each image by a corresponding timing.
 
-See the config file for the full available options.
+See a config file for the full list of available options.
 
 Also, see a [sample project](./src/hibari/sample_project/) for a directory structure if in doubt.
 
@@ -34,7 +34,7 @@ Images are loaded in the order they appear in a default file manager in your OS.
 
 Maintaining the same resolution or format is not required, but it is recommended that images have at least a similar aspect ratio to avoid stretching.
 
-If an image name ends with `#`, it is ignored. With a large number of images you want `hibari` to ignore, move them in another subdirectory instead.
+If an image name ends with `#`, it will be ignored. With a large number of images you want `hibari` to ignore, move them to a subdirectory instead. You must also comment the corresponding lines in the timesheet.
 
 ### Timesheet
 
@@ -46,7 +46,7 @@ This will create a simple timesheet. Timesheet template can be found [here](./sr
 
 In addition to image names, you can also write a color name with a desired timing to add a color filler. Color names are predefined in the config file and can be easily adjusted.
 
-If you want to have several timesheets for different purposes, copy the timesheet, edit it, and pass its name with `--timesheet-name` option:
+If you want to have several timesheets for different purposes, copy the timesheet, edit it, and pass its name with the `--timesheet-name` option:
 ```powershell
 hibari view --timesheet-name 'ts alt'
 ```
@@ -60,7 +60,7 @@ To load a comparison clip, enter its path in the config file, and match frame ra
 
 By running `hibari view`, you will only see one clip available, but cropping it or loading a comparison clip will spawn other clips (called *nodes*).
 
-Shortcuts for `VSView`:
+Essential shortcuts for `VSView`:
 - `Ctrl+R` for reloading the script and viewing changes made to the project
 - left / right arrows for framestepping (holding down `Shift` increases a step)
 - numeric keys for switching between nodes
@@ -69,23 +69,25 @@ Shortcuts for `VSView`:
 
 To encode the nodes, you need to have at least one encoder in the PATH. `x264` and `FFmpeg` have default settings and syntax in `hibari`, but passing stdout to another encoder is possible as well.
 
-To use `FFmpeg` with another encoder besides `libx264`, check `--full-args` option. 
+To use `FFmpeg` with another encoder besides `libx264`, check the `--full-args` option. 
 
 Encode a range of nodes with default settings:
 ```powershell
 hibari encode -n 0..6
 ```
 
-Switch to `x264` and custom arguments:
+Switch to `x264` with custom arguments and MKV container:
 ```powershell
-hibari encode --bin x264 --args '--crf 14 --no-mbtree --qpstep 2 --aq-mode 2 --aq-strength 0.95 --qcomp 0.65' -n 0,4
+hibari encode --bin x264 --args '--preset slower --crf 14 --no-mbtree --qpstep 2 --aq-mode 2' --mkv -n 0,4
 ```
 
-Switch to another encoder and resized output:
+Switch to another encoder and resize output:
 ```powershell
 hibari encode --full-args 'ffmpeg -y -i - -c:v libx265 -preset veryslow -crf 12 -x265-params "colormatrix=bt709:transfer=bt709:colorprim=bt709" "./clips/{i}{name}{res}.mp4"' --resize 480 -n 4
 ```
 Where:
 - `{i}` is a node index
 - `{name}` is a node short name
-- `{res}` is an output height; you can safely add it even if `--resize` option has not been used, as it will yield an empty string instead
+- `{res}` is an output height; you can safely add it even if the `--resize` option has not been used, as it will yield an empty string instead
+
+With `--full-args`, always tag colors as BT.709.

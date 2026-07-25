@@ -125,14 +125,14 @@ def encode(
             help='Show full encoding information.',
         )
     ] = False,
+
     binary: Annotated[
         str,
         Option(
             '-b',
             '--bin',
             help='Select an encoder. Default arguments are switched as well '
-                 'to match the syntax. FFmpeg is libx264-only with this argument. '
-                 'Output container is MP4.',
+                 'to match the syntax. FFmpeg is libx264-only with this argument.',
             rich_help_panel='x264 / FFmpeg',
         )
     ] = 'FFmpeg',
@@ -146,6 +146,15 @@ def encode(
             rich_help_panel='x264 / FFmpeg',
         )
     ] = '-preset veryslow -crf 13.5',
+    mkv: Annotated[
+        bool,
+        Option(
+            '--mkv',
+            help='Switch to MKV container instead of MP4.',
+            rich_help_panel='x264 / FFmpeg',
+        )
+    ] = False,
+
     fullargs: Annotated[
         str | None,
         Option(
@@ -165,5 +174,5 @@ def encode(
     inited_check()
     images_in_directory_check()
 
-    encode_out_nodes(ts_name, binary, args, node_index, available_nodes, verbose, fullargs, resize)
+    encode_out_nodes(ts_name, binary, args, node_index, available_nodes, verbose, fullargs, resize, mkv)
     raise Exit
