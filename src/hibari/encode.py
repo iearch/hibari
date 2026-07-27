@@ -22,10 +22,10 @@ def encode_out_nodes(
     verbose: bool,
     fullargs: str | None,
     resize_val: int | None,
+    note_str: str | None,
     mkv: bool,
 ) -> None:
     nodes = vsscript(ts_name, quiet=True, resize_val=resize_val)
-    res = '' if resize_val is None else ' ' + str(resize_val) + 'p'
 
     if fullargs:
         binary = fullargs.split()[0]
@@ -39,7 +39,7 @@ def encode_out_nodes(
 
         table.add_column(style='cyan', justify='center')
         table.add_column(style='yellow', no_wrap=True)
-        table.add_column(style='yellow', no_wrap=True)
+        table.add_column()
 
         available_indices = list[int]()
         for i, name, _ in nodes:
@@ -51,7 +51,7 @@ def encode_out_nodes(
 
 
     def parse_input_nodes(in_nodes: str) -> list[int]:
-        '''Parse user text input to a list of indices.'''
+        '''Parse user text input to the list of indices.'''
         _in_nodes = re.split(r'\D', in_nodes)
         try:
             if '' in _in_nodes:
@@ -88,10 +88,10 @@ def encode_out_nodes(
 
         x_bin = f'{binary} --demuxer y4m'
         x_def_args = '--preset veryslow --crf 13.5'
-        x_info = '--colormatrix bt709 --transfer bt709 --colorprim bt709 -o "./clips/{i}{name}{res}.{ext}" -'
+        x_info = '--colormatrix bt709 --transfer bt709 --colorprim bt709 -o "./clips/{i}{name}{res}{note}.{ext}" -'
         ff_bin = f'{binary} -y -i - -c:v libx264'
         ff_def_args = '-preset veryslow -crf 13.5'
-        ff_info = '-x264-params "colormatrix=bt709:transfer=bt709:colorprim=bt709" "./clips/{i}{name}{res}.{ext}"'
+        ff_info = '-x264-params "colormatrix=bt709:transfer=bt709:colorprim=bt709" "./clips/{i}{name}{res}{note}.{ext}"'
 
         is_def = args == ff_def_args
         line = '{binary} {args} {info}'.format(
@@ -108,15 +108,21 @@ def encode_out_nodes(
         return line
 
 
-    def encode(line: str, i: int, name: str, node: VideoNode, res: str, mkv: bool) -> None:
+    def encode(line: str, i: int, name: str, node: VideoNode) -> None:
         with subprocess.Popen(
-            line.format(i=i, name=' ' + name, res=res, ext='mkv' if mkv else 'mp4'),
+            line.format(
+                i=i,
+                name=' ' + name,
+                res=' ' + str(resize_val) + 'p' if resize_val else '',
+                note=' ' + re.sub(r'[\\/:*?"<>|]', '', note_str) if note_str else '',
+                ext='mkv' if mkv else 'mp4'
+            ),
             stdin=subprocess.PIPE,
             stdout=None if verbose else subprocess.DEVNULL,
             stderr=None if verbose else subprocess.DEVNULL,
         ) as process:
             if not verbose:
-                print(f'Encoding node {i} ({name})...')
+                print(f'Encoding node {i} ([yellow]{name}[/yellow])...')
 
             node.output(cast(BinaryIO, process.stdin), y4m=True)
 
@@ -136,7 +142,7 @@ def encode_out_nodes(
 
             line = fullargs if fullargs else get_shell_line()
             try:
-                encode(line, i, name, node, res, mkv)
+                encode(line, i, name, node)
             except KeyboardInterrupt:
                 # doesn't work well with x264
                 raise Abort

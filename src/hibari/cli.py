@@ -72,7 +72,7 @@ def view(
 ) -> None:
     inited_check()
     images_in_directory_check()
-    
+
     # only to properly collect exceptions
     vsscript(ts_name, quiet)
 
@@ -154,6 +154,14 @@ def encode(
             rich_help_panel='x264 / FFmpeg',
         )
     ] = False,
+    note: Annotated[
+        str | None,
+        Option(
+            '--note',
+            help='Text to be appended to the output name. Useful for versioning.',
+            rich_help_panel='x264 / FFmpeg',
+        )
+    ] = None,
 
     fullargs: Annotated[
         str | None,
@@ -165,7 +173,7 @@ def encode(
                  'add [cyan]{i}[/cyan] to the output filename to indicate a node '
                  'index, [cyan]{name}[/cyan] to indicate a node name, and '
                  '[cyan]{res}[/cyan] to indicate the output height (passed with --resize); '
-                 'also, choose Y4M demuxer. It is a good practice '
+                 'also, choose Y4M demuxer and tag colors as BT.709. It is a good practice '
                  'to encode in the [yellow]./clips/[/yellow] subdirectory.',
             rich_help_panel='Other encoders',
         )
@@ -174,5 +182,5 @@ def encode(
     inited_check()
     images_in_directory_check()
 
-    encode_out_nodes(ts_name, binary, args, node_index, available_nodes, verbose, fullargs, resize, mkv)
+    encode_out_nodes(ts_name, binary, args, node_index, available_nodes, verbose, fullargs, resize, note, mkv)
     raise Exit
