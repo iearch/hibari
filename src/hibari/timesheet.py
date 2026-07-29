@@ -103,7 +103,8 @@ def get_timings_from_timesheet(ts_name: str) -> list[tuple[str, str, str, str]]:
             color_lines += 1
         except AttributeError:
             try:
-                basename = basenames[i - color_lines]
+                clean_basename = basenames[i - color_lines]
+                basename = ''.join('\\' + b if b in '.^$+()[]' else b for b in clean_basename)
 
                 img_re = re.search(fr'^({basename})\D+(\d+)\s*(.*)', ln)
                 img_name, img_timing, img_com = img_re.groups()
