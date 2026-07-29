@@ -21,7 +21,8 @@ from typer import Exit
 script_path = Path(__file__)
 
 nodes_desc = {
-    'full clip': 'animated image sequence only',
+    'full clip': 'images animated with given timings',
+    'image sequence': 'images animated with a minimum timing; useful during the timing process (try to turn off syncing playheads in vsview)',
     'cropped clip': 'clip cropped / bordered by user',
     'vertical': 'clip stacked with a comparison clip vertically',
     'horizontal': 'clip stacked with a comparison clip horizontally',
@@ -94,7 +95,7 @@ def vsscript(
         return transferred_clip
 
 
-    def clip_from_images() -> vs.VideoNode:
+    def clip_from_images() -> tuple[vs.VideoNode, vs.VideoNode]:
         '''
         Each image is repeated `n` frames, where `n` is a timing taken from the timesheet.  
         For better performance, bs caches every image in the directory.
@@ -113,7 +114,13 @@ def vsscript(
 
         placeholder_clip = normalize(blank_clip)
 
-        def image_loader(n: int) -> vs.VideoNode:
+        def load_image(filename: str):
+            image_src = core.bs.VideoSource(user_img_dir / filename,
+                                            cachemode=2, showprogress=False)[0]
+            image = normalize(image_src)
+            return image.resize.Lanczos(placeholder_clip.width, placeholder_clip.height)
+
+        def animate_images_by_timing(n: int) -> vs.VideoNode:
             name = timed[n][0]
             if name in colors:
                 filler_clip = core.std.BlankClip(clip=placeholder_clip,
@@ -121,14 +128,15 @@ def vsscript(
                                                  format=vs.RGB24)[0]
                 return normalize(filler_clip)
             else:
-                image_src = core.bs.VideoSource(user_img_dir / file_dict[name],
-                                                cachemode=2, showprogress=False)[0]
-                image = normalize(image_src)
-                return image.resize.Lanczos(placeholder_clip.width, placeholder_clip.height)
+                return load_image(file_dict[name])
 
-        eval_clip = core.std.FrameEval(placeholder_clip, image_loader)
+        def animate_images_simple(n: int) -> vs.VideoNode:
+            return load_image(imgseq[n])
 
-        return eval_clip
+        anim_clip = core.std.FrameEval(placeholder_clip, animate_images_by_timing)
+        seq_clip = core.std.FrameEval(placeholder_clip[: len(imgseq)], animate_images_simple)
+
+        return (anim_clip, seq_clip)
 
 
     def prepare_comp_source() -> list[vs.VideoNode]:
@@ -329,11 +337,13 @@ def vsscript(
     is_cropped = sum(abs(val) for val in crop.values()) != 0
     is_comp_provided = comp_src != ''
 
-    anim_clip = clip_from_images()
+    anim_clip, seq_clip = clip_from_images()
     _set_output(anim_clip, 'full clip')
 
+    seq_crop = border_or_crop_clip(seq_clip)
+    _set_output(seq_crop, 'image sequence')
+    
     clip_crop = border_or_crop_clip(anim_clip)
-
     if not is_comp_provided:
         _set_output(clip_crop, 'cropped clip') if is_cropped else None
     else:
