@@ -41,7 +41,7 @@ def create_timesheet(default_timing: int) -> None:
         print('[green]Timesheet created!')
     except FileExistsError:
         print(f'[red]Warning: Timesheet already exists:\n'
-              f'[yellow]{str(user_timesheet)}[/yellow]\n'
+              f'[yellow]{str(user_timesheet)}[/]\n'
               f'Rewriting will erase all comments, color fillers, and other formatting. Rewrite?')
 
         i = input('[y/N]:')
@@ -62,10 +62,10 @@ def get_timings_from_timesheet(ts_name: str) -> list[tuple[str, str, str, str]]:
             ts_lines = [l.splitlines() for l in timesheet.readlines()]
     except FileNotFoundError:
         print('[red]Error: Timesheet file not found! Run '
-              '[cyan]hibari timesheet[/cyan] to create a timesheet file.')
+              '[cyan]hibari timesheet[/] to create a timesheet file.')
         if ts_name != 'timesheet':
             print(f'[red]Notice that you are currently trying to read the timesheet '
-                  f'from a non-standard file named [yellow]{ts_name}.txt[/yellow].')
+                  f'from a non-standard file named [yellow]{ts_name}.txt[/].')
         raise Exit(1)
 
     ts_formatted_lines = [l for nested_lines in ts_lines for l in nested_lines
@@ -115,7 +115,7 @@ def get_timings_from_timesheet(ts_name: str) -> list[tuple[str, str, str, str]]:
             except (AttributeError, IndexError):
                 print(
                     f'[red]Error: Timings not found! Problem line:\n'
-                    f'\t[yellow]{ln}[/yellow]\n'
+                    f'\t[yellow]{ln}[/]\n'
                     f'If you added timesheet lines or images after the timesheet '
                     f'was created, please check if you forgot to match them.\n'
                     f'Also, check if you followed the template:\n'

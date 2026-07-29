@@ -72,8 +72,8 @@ def encode_out_nodes(
                     raise ValueError
         except SyntaxError:
             print('[red]Error: Output nodes were entered incorrectly!\n'
-                  'Use [cyan]3[/cyan] for a single node, [cyan]0,3,4[/cyan] for separate '
-                  'nodes, and [cyan]0..3[/cyan] for ranges.')
+                  'Use [cyan]3[/] for a single node, [cyan]0,3,4[/] for separate '
+                  'nodes, and [cyan]0..3[/] for ranges.')
             raise Exit(1)
         except ValueError:
             print('[red]Error: Invalid node index entered.')
@@ -101,8 +101,8 @@ def encode_out_nodes(
         )
 
         if not (is_x or is_ff) and which(binary):
-            print(f'[red]Error: [yellow]{binary}[/yellow] cannot be used '
-                  f'with [cyan]--bin[/cyan]! Switch to [cyan]--full-args[/cyan].')
+            print(f'[red]Error: [yellow]{binary}[/] cannot be used '
+                  f'with [cyan]--bin[/]! Switch to [cyan]--full-args[/].')
             raise Exit(1)
 
         return line
@@ -122,7 +122,7 @@ def encode_out_nodes(
             stderr=None if verbose else subprocess.DEVNULL,
         ) as process:
             if not verbose:
-                print(f'Encoding node {i} ([yellow]{name}[/yellow])...')
+                print(f'Encoding node {i} ([yellow]{name}[/])...')
 
             node.output(cast(BinaryIO, process.stdin), y4m=True)
 
@@ -147,20 +147,20 @@ def encode_out_nodes(
                 # doesn't work well with x264
                 raise Abort
             except FileNotFoundError:
-                print(f'[red]Error: [yellow]{binary}[/yellow] not in the PATH!')
+                print(f'[red]Error: [yellow]{binary}[/] not in the PATH!')
                 raise Exit(1)
             except BrokenPipeError:
                 # worked great the other day
                 print('[red]Error: Broken pipe!')
                 if is_x:
-                    print('[red]Make sure your [yellow]x264[/yellow] binary was compiled '
-                          'with an MP4 support. If unsure, switch to [yellow]FFmpeg[/yellow] '
-                          'or use with [cyan]--mkv[/cyan].')
+                    print('[red]Make sure your [yellow]x264[/] binary was compiled '
+                          'with an MP4 support. If unsure, switch to [yellow]FFmpeg[/] '
+                          'or use with [cyan]--mkv[/].')
                 raise Exit(1)
             except Exception as e:
                 print(f'[red]### {e} ###')
                 if fullargs:
-                    print('[red]Please check the [cyan]--full-args[/cyan] string again.')
+                    print('[red]Please check the [cyan]--full-args[/] string again.')
                 raise Exit(1)
         else:
             if not verbose:

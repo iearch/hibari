@@ -314,7 +314,7 @@ def vsscript(
                     return clip
                 case _:
                     print('[red]Error: Cannot type the text!\n'
-                          'Adjust [yellow]what_to_print[/yellow] setting in the config.')
+                          'Adjust [yellow]what_to_print[/] setting in the config.')
                     raise Exit(1)
 
         print_by_frame()

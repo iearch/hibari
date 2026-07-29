@@ -47,9 +47,9 @@ def init_project() -> None:
 def inited_check() -> None:
     if not is_inited:
         print('[red]Error: This is not a project directory! '
-              'Please run [cyan]hibari init[/cyan].\n'
+              'Please run [cyan]hibari init[/].\n'
               'If you already have it set up, run [cyan]cd '
-              '"path/to/your/project/directory"[/cyan].')
+              '"path/to/your/project/directory"[/].')
         raise Exit(1)
 
 

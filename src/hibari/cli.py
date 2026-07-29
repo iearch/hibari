@@ -47,7 +47,7 @@ def timesheet(
 
 
 ts_name_help = 'Read the timesheet from a different file instead of ' \
-    '[yellow]./timesheet.txt[/yellow]. The file must be in the same directory. ' \
+    '[yellow]./timesheet.txt[/]. The file must be in the same directory. ' \
     'Provide a name without an extension.'
 
 
@@ -97,8 +97,8 @@ def encode(
             '-n',
             '--node',
             help='Provide nodes you want to encode. Use '
-                 '[cyan]0,3,4[/cyan] for separate nodes and '
-                 '[cyan]0..3[/cyan] for ranges.',
+                 '[cyan]0,3,4[/] for separate nodes and '
+                 '[cyan]0..3[/] for ranges.',
         )
     ] = '0',
     resize: Annotated[
@@ -158,7 +158,7 @@ def encode(
         str | None,
         Option(
             '--note',
-            help='Text to be appended to the output name. Useful for versioning.',
+            help='Text to append to the output name; useful for versioning.',
             rich_help_panel='x264 / FFmpeg',
         )
     ] = None,
@@ -169,12 +169,12 @@ def encode(
             '-f',
             '--full-args',
             help='Provide a full string passed to the shell. '
-                 'Use [cyan]-[/cyan] instead of the input path, '
-                 'add [cyan]{i}[/cyan] to the output filename to indicate a node '
-                 'index, [cyan]{name}[/cyan] to indicate a node name, and '
-                 '[cyan]{res}[/cyan] to indicate the output height (passed with --resize); '
+                 'Use [cyan]-[/] instead of the input path, '
+                 'add [cyan]{i}[/] to the output filename to indicate a node '
+                 'index, [cyan]{name}[/] to indicate a node name, and '
+                 '[cyan]{res}[/] to indicate the output height (passed with --resize); '
                  'also, choose Y4M demuxer and tag colors as BT.709. It is a good practice '
-                 'to encode in the [yellow]./clips/[/yellow] subdirectory.',
+                 'to encode in the [yellow]./clips/[/] subdirectory.',
             rich_help_panel='Other encoders',
         )
     ] = None,

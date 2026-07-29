@@ -29,7 +29,7 @@ position = 7
 
 ## cropping to a separate clip.
 ## negative values will add borders (adjust color below).
-## values are rounded to 2
+## if you need to pan a clip, experiment with these values
 
 left   = 0
 right  = 0
